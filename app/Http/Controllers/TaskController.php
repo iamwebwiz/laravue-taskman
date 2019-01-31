@@ -65,6 +65,22 @@ class TaskController extends Controller
     }
 
     /**
+     * Mark a task resource as completed
+     * 
+     * @param \App\Task $task
+     * @return \Illuminate\Http\Response
+     */
+    public function complete(Task $task)
+    {
+        $task->completed = true;
+        $task->save();
+
+        return response()->json([
+            'message' => 'Task has been completed.'
+        ], 200);
+    }
+
+    /**
      * Delete a Task resource
      * 
      * @param \App\Task $task
