@@ -1,10 +1,14 @@
 <template>
     <div class="container">
-        <div class="row mt-5">
+        <div class="row mt-5 mb-5">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Tasks</h4>
+                        <h4 class="float-left">Tasks</h4>
+                        <span class="float-right">
+                            <router-link tag="a" class="btn btn-primary" to="/profile">Profile</router-link>
+                        </span>
+                        <div class="clearfix"></div>
                     </div>
                     <div class="card-body">
                         <button @click="initAddTask" class="btn btn-primary btn-block pt-3 pb-3">Add Task</button>
@@ -17,7 +21,7 @@
                                     <th>Action</th>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(task, index) in tasks" :key="index">
+                                    <tr v-for="(task, index) in tasks" :key="task.id">
                                         <td>{{ index + 1 }}</td>
                                         <td>{{ task.body }}</td>
                                         <td>{{ task.completed == true ? 'Completed' : 'Not Completed' }}</td>
@@ -51,10 +55,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger" v-if="errors.length > 0">
-                            <ul>
-                                <li v-for="error in errors">{{ error }}</li>
-                            </ul>
+                        <div v-if="errors.length > 0">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert" v-for="(error, index) in errors" :key="index">
+                                {{ error }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -85,28 +92,29 @@
         },
         
         mounted() {
-            this.fetchTasks();
+            this.fetchTasks()
         },
 
         methods: {
             fetchTasks() {
                 axios.get('/api/tasks').then(response => {
-                    this.tasks = response.data.tasks;
-                    console.log(this.tasks);
+                    this.tasks = response.data.tasks
+                    console.log(this.tasks)
                 });
             },
 
             initAddTask() {
-                $('#add_task_modal').modal('show');
+                $('#add_task_modal').modal('show')
             },
 
             createTask() {
                 axios.post('/api/tasks', {
                     body: this.task.body
                 }).then(response => {
-                    this.reset();
-                    this.tasks.push(response.data.task);
-                    $('#add_task_modal').modal('hide');
+                    this.reset()
+                    // this.tasks.push(response.data.task)
+                    this.tasks = response.data.tasks
+                    $('#add_task_modal').modal('hide')
                 }).catch(error => {
                     if (error.response.data.errors && error.response.data.errors.body) {
                         this.errors.push(error.response.data.errors.body[0])
@@ -115,23 +123,24 @@
             },
 
             reset() {
-                this.task.body = '';
+                this.task.body = ''
+                this.errors = []
             },
 
             completeTask(index) {
                 axios.patch(`/api/tasks/${this.tasks[index].id}/complete`).then(response => {
-                    this.tasks[index].completed = true;
+                    this.tasks[index].completed = true
                 }).catch(error => {
-                    console.log(error);
-                });
+                    console.log(error)
+                })
             },
 
             deleteTask(index) {
                 axios.delete(`/api/tasks/${this.tasks[index].id}/delete`).then(response => {
-                    this.tasks.splice(index, 1);
+                    this.tasks.splice(index, 1)
                 }).catch(error => {
-                    console.log(error);
-                });
+                    console.log(error)
+                })
             }
         }
     }
