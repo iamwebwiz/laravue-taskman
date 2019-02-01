@@ -37,8 +37,11 @@ class TaskController extends Controller
             'body' => request('body')
         ]);
 
+        $tasks = Task::all();
+
         return response()->json([
             'task' => $task,
+            'tasks' => $tasks,
             'message' => 'Successfully created task.'
         ], 201);
     }
