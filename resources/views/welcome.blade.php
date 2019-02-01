@@ -9,10 +9,11 @@
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+    <link rel="icon" href="{{ asset('svg/lnr-list.svg') }}">
 </head>
 <body>
     <div id="app">
-        <Task></Task>
+        <router-view></router-view>
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
